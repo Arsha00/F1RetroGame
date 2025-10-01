@@ -1,0 +1,49 @@
+﻿<!-- @Author: Arian Sjöström Shaafi -->
+
+<Window x:Class="Formula1Retro.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Formula 1 Retro"
+        Height="600"
+        Width="1000"
+        Background="Black">
+
+    <Grid>
+        <!-- Canvas för spelet -->
+        <Canvas x:Name="GameCanvas"
+                Background="DarkSlateGray"
+                Focusable="True" />
+
+        <!-- HUD -->
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Background="#AA000000"
+                    Margin="10">
+            <TextBlock Text="Speed: " Foreground="White" FontWeight="Bold"/>
+            <TextBlock Text="{Binding PlayerSpeed}" Foreground="Lime" FontWeight="Bold"/>
+            <TextBlock Text=" km/h   " Foreground="White" FontWeight="Bold"/>
+            <TextBlock Text="DRS Status: " Foreground="White" FontWeight="Bold"/>
+            <TextBlock Text="{Binding RaceStatus}" Foreground="Yellow" FontWeight="Bold"/>
+        </StackPanel>
+
+        <!-- Startljus -->
+        <StackPanel Orientation="Horizontal"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Margin="0,18,0,0">
+            <Ellipse Width="40" Height="40"
+             Fill="{Binding RedLightOn, Converter={StaticResource BoolToBrush}, ConverterParameter='Red'}"
+             Stroke="Black" StrokeThickness="2"
+             Margin="5"/>
+            <Ellipse Width="40" Height="40"
+             Fill="{Binding YellowLightOn, Converter={StaticResource BoolToBrush}, ConverterParameter='Yellow'}"
+             Stroke="Black" StrokeThickness="2"
+             Margin="5"/>
+            <Ellipse Width="40" Height="40"
+             Fill="{Binding GreenLightOn, Converter={StaticResource BoolToBrush}, ConverterParameter='Lime'}"
+             Stroke="Black" StrokeThickness="2"
+             Margin="5"/>
+        </StackPanel>
+    </Grid>
+</Window>
