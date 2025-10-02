@@ -21,10 +21,15 @@ For now both players moves and operates accordingly, game camera works according
 
 ####### UPDATES FOR FINAL VERSION ########
 
-- Track updates, curves to be added, track to be increased, track limitation for Cars (does not continue after race ended).
+- Track updates, track to be increased, track limitation for Cars (does not continue after race ended).
+(Update made 2025-10-02)
+
 - AI update, movement updates required
 - Lights to be removed after start
+
 - Goal Line needs to be set, with an Game Over println
+(Update made 2025-10-02)
 
 ####### IF TIME #######
+
 - Further track improvements (Add MiniMap)
