@@ -25,7 +25,7 @@ namespace Formula1Retro
         public Car Enemy { get; }
         public Track Track { get; }
 
-        // HUD-bindings
+        // HUD
         private int _playerSpeed;
         public int PlayerSpeed
         {
@@ -49,7 +49,9 @@ namespace Formula1Retro
         public bool RedLightOn { get; private set; }
         public bool YellowLightOn { get; private set; }
         public bool GreenLightOn { get; private set; }
+
         public bool RaceStarted { get; private set; }
+        public bool RaceFinished { get; private set; }
 
         public GameViewModel(InputService inputService)
         {
@@ -63,33 +65,41 @@ namespace Formula1Retro
             // Bana
             Track = new Track();
 
-            // Startljus
+            // Startstatus
             _countdownTime = 0;
             RaceStarted = false;
-            RedLightOn = YellowLightOn = GreenLightOn = false;
+            RaceFinished = false;
+            RaceStatus = "Waiting...";
         }
 
         public void Update(float deltaTime)
         {
+            if (RaceFinished)
+            {
+                // Spelet är slut, låt bilarna stå still
+                return;
+            }
+
             if (!RaceStarted)
             {
                 HandleCountdown(deltaTime);
-                return; // stoppa bilarna innan racet börjar
+                return;
             }
 
-            // Uppdatera spelare
+            // Uppdatera bilar
             Player.Update(deltaTime, _inputService);
-
-            // Uppdatera AI
             Enemy.Update(deltaTime, null);
 
-            // Kamera
+            // Kamera följer spelaren
             CameraX = Player.X - 400;
             CameraY = Player.Y - 300;
 
             // HUD
             PlayerSpeed = (int)(Player.CurrentSpeed * 3.6f);
             RaceStatus = Player.IsDrsActive ? "DRS Open" : "DRS Closed";
+
+            // Kontrollera mål
+            CheckFinish();
         }
 
         private void HandleCountdown(float deltaTime)
@@ -114,7 +124,7 @@ namespace Formula1Retro
             else
             {
                 RaceStarted = true;
-                GreenLightOn = false; // släck lamporna
+                RedLightOn = YellowLightOn = GreenLightOn = false;
                 RaceStatus = "Race!";
             }
 
@@ -122,6 +132,28 @@ namespace Formula1Retro
             OnPropertyChanged(nameof(YellowLightOn));
             OnPropertyChanged(nameof(GreenLightOn));
             OnPropertyChanged(nameof(RaceStatus));
+        }
+
+        public string WinnerText { get; private set; } = "";
+        private void CheckFinish()
+        {
+            if (Player.Y <= Track.FinishLineY)
+            {
+                RaceFinished = true;
+                RaceStatus = "You Win!";
+                WinnerText = "PLAYER WIN";
+            }
+            else if (Enemy.Y <= Track.FinishLineY)
+            {
+                RaceFinished = true;
+                RaceStatus = "AI Wins!";
+                WinnerText = "AI WINS";
+            }
+
+            if (RaceFinished)
+            {
+                OnPropertyChanged(nameof(RaceStatus));
+            }
         }
 
         public void Render(DrawingContext context)
